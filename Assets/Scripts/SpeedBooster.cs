@@ -3,18 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionEntire : MonoBehaviour
+public class SpeedBooster : MonoBehaviour
 {
-    [SerializeField] private GameObject particle;
-
     private CarController car;
-
-    private void OnCollisionEnter(Collision other)
+    [SerializeField] private float speedBoost;
+    [SerializeField] private GameObject particle;
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent<CarController>(out car))
         {
             particle.SetActive(true);
-            particle.transform.position = gameObject.transform.position;
+            car.SpeedBoost(speedBoost);
         }
     }
+    
 }

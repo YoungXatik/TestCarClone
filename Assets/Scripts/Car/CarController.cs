@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    [Header("Components")]
+    [Header("Components")] 
+    private CarUI _carUI;
     [SerializeField] private Rigidbody sphereRigidbody;
     [SerializeField] private Rigidbody carRigidbody;
     [SerializeField] private Transform carTransform;
@@ -13,10 +14,10 @@ public class CarController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Move")]
-    private float moveInput;
-    [SerializeField] private float trueForwardSpeed;
-    [SerializeField] private float trueReverseSpeed;
-    [SerializeField] private float maxForwardSpeed;
+    private float _moveInput;
+    private float _trueForwardSpeed;
+    private float _trueReverseSpeed;
+    private float _maxForwardSpeed;
     [SerializeField] private float forwardSpeed;
     [SerializeField] private float reverseSpeed;
 
@@ -40,20 +41,21 @@ public class CarController : MonoBehaviour
     
     private void Start()
     {
+        _carUI = GetComponent<CarUI>();
         sphereRigidbody.transform.parent = null;
         carRigidbody.transform.parent = null;
         normalDrag = sphereRigidbody.drag;
-        trueForwardSpeed = forwardSpeed;
-        trueReverseSpeed = reverseSpeed;
-        maxForwardSpeed = forwardSpeed + (forwardSpeed * 0.5f);
+        _trueForwardSpeed = forwardSpeed;
+        _trueReverseSpeed = reverseSpeed;
+        _maxForwardSpeed = forwardSpeed * 2;
     }
 
     private void Update()
     {
-        moveInput = Input.GetAxis("Vertical");
+        _moveInput = Input.GetAxis("Vertical");
         turnInput = Input.GetAxis("Horizontal");
 
-        moveInput *= moveInput > 0 ? forwardSpeed : reverseSpeed;
+        _moveInput *= _moveInput > 0 ? forwardSpeed : reverseSpeed;
 
         carTransform.position = sphereTransform.position;
 
@@ -68,27 +70,29 @@ public class CarController : MonoBehaviour
 
         sphereRigidbody.drag = isCarGrounded ? normalDrag : modifiedDrag;
 
+        _carUI.UpdateUI(_moveInput);
+        
         if (Input.GetKey(KeyCode.W))
         {
             inputTimerCounter += Time.deltaTime;
             if (inputTimerCounter >= inputTimer) 
             {
-                forwardSpeed += (inputTimerCounter * Time.deltaTime);
-                if (forwardSpeed >= maxForwardSpeed)
+                forwardSpeed += (inputTimerCounter * Time.deltaTime) * 2;
+                if (forwardSpeed >= _maxForwardSpeed)
                 {
-                    forwardSpeed = maxForwardSpeed;
+                    forwardSpeed = _maxForwardSpeed;
                 }
             }
         }
         else if(Input.GetKeyUp(KeyCode.W))
         {
-            forwardSpeed = trueForwardSpeed;
+            forwardSpeed = _trueForwardSpeed;
             inputTimerCounter = 0;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            if (moveInput >= 0)
+            if (_moveInput >= 0)
             {
                 inputTimerCounter += Time.deltaTime;
                 if (inputTimerCounter >= inputTimer)
@@ -100,8 +104,8 @@ public class CarController : MonoBehaviour
         }
         else if (Input.GetKeyUp(KeyCode.S))
         {
-            forwardSpeed = trueForwardSpeed;
-            reverseSpeed = trueReverseSpeed;
+            forwardSpeed = _trueForwardSpeed;
+            reverseSpeed = _trueReverseSpeed;
             inputTimerCounter = 0;
         }
         
@@ -136,7 +140,7 @@ public class CarController : MonoBehaviour
     {
         if (isCarGrounded)
         {
-            sphereRigidbody.AddForce(transform.forward * moveInput,ForceMode.Acceleration);   
+            sphereRigidbody.AddForce(transform.forward * _moveInput,ForceMode.Acceleration);   
         }
         else
         {
@@ -145,4 +149,19 @@ public class CarController : MonoBehaviour
         
         carRigidbody.MoveRotation(carTransform.rotation);
     }
+
+    public void SpeedBoost(float speedBoostValue)
+    {
+        StartCoroutine(SpeedBoostCoroutine(speedBoostValue));
+    }
+
+    private IEnumerator SpeedBoostCoroutine(float speedBoost)
+    {
+        forwardSpeed += speedBoost;
+        _maxForwardSpeed += speedBoost;
+        yield return new WaitForSeconds(2f);
+        forwardSpeed -= speedBoost;
+        _maxForwardSpeed -= speedBoost;
+    }
+    
 }         
