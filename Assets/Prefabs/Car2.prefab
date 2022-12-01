@@ -874,6 +874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 0}
+  _cameraOffset: {fileID: 0}
 --- !u!114 &5717537090608522961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,7 +899,7 @@ MonoBehaviour:
   reverseSpeed: 50
   breakSpeed: 0
   breaking: 0
-  turnSpeed: 75
+  turnSpeed: 30
   modifiedDrag: 0.1
   fallForce: 30
   alighToGroundTime: 5

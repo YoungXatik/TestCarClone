@@ -15,11 +15,11 @@ public class CarController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Move")]
-    [SerializeField] private float _moveInput;
+    private float _moveInput;
     private float _trueForwardSpeed;
     private float _trueReverseSpeed;
-    [SerializeField] private float forwardSpeed;
-    [SerializeField] private float reverseSpeed;
+    public float forwardSpeed { get; private set; }
+    public float reverseSpeed { get; private set; }
 
     [SerializeField] private float breakSpeed;
     [SerializeField] private bool breaking;
@@ -80,14 +80,18 @@ public class CarController : MonoBehaviour
 
         carTransform.position = sphereTransform.position;
 
-        float newRotation = turnInput * turnSpeed * Time.deltaTime;
-        carTransform.Rotate(0, newRotation, 0, Space.World);
+        if (_moveInput != 0)
+        {
+            float newRotation = turnInput * turnSpeed * Time.deltaTime;
+            carTransform.Rotate(0, newRotation, 0, Space.World);
+        }
 
         RaycastHit hit;
         isCarGrounded = Physics.Raycast(carTransform.position, -carTransform.up, out hit, 1f, groundLayer);
-
+        
         Quaternion toRotateTo = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         carTransform.rotation = Quaternion.Slerp(carTransform.rotation, toRotateTo, alighToGroundTime * Time.deltaTime);
+        
 
         sphereRigidbody.drag = isCarGrounded ? normalDrag : modifiedDrag;
 

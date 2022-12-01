@@ -7,18 +7,25 @@ public class WheelsRotation : MonoBehaviour
 {
     [SerializeField] private Transform[] wheels;
     [SerializeField] private float wheelsSpeed;
-
+    private CarController _car;
     [SerializeField] private Animator wheelsAnimator;
+
+    private void Awake()
+    {
+        _car = GetComponent<CarController>();
+    }
 
     private void Update()
     {
-        wheelsAnimator.SetFloat("rotation",Input.GetAxis("Horizontal"));
-        
-        float verticalAxes = Input.GetAxisRaw("Vertical");
+        wheelsAnimator.SetFloat("rotation", Input.GetAxis("Horizontal"));
 
-        for (int i = 0; i < wheels.Length; i++)
+        if (_car.forwardSpeed != 0 || _car.reverseSpeed != 0)
         {
-            wheels[i].Rotate(Time.deltaTime * verticalAxes * wheelsSpeed,0,0, Space.Self);
+            float verticalAxes = Input.GetAxisRaw("Vertical");
+            for (int i = 0; i < wheels.Length; i++)
+            {
+                wheels[i].Rotate(Time.deltaTime * 100 * wheelsSpeed, 0, 0, Space.Self);
+            }
         }
     }
 }
