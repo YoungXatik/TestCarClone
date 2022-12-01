@@ -20,14 +20,14 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/Collisions/CollisionEntire.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/SpeedBooster.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/CrashProccessing.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Car/CarUI.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Car/WheelsRotation.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Car/CameraFollowing.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/BackToStart.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/Collisions/CollisionEntire.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Car/CarController.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/SpeedBooster.cs" />
       </list>
     </option>
   </component>
@@ -71,7 +71,7 @@
       <updated>1669892332679</updated>
       <workItem from="1669892338390" duration="4623000" />
       <workItem from="1669902298953" duration="6530000" />
-      <workItem from="1669914498123" duration="2891000" />
+      <workItem from="1669914498123" duration="4303000" />
     </task>
     <servers />
   </component>

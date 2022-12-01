@@ -126,7 +126,7 @@ public class CarController : MonoBehaviour
                 _moveInput = -reverseSpeed;
                 inputTimerCounter += Time.deltaTime;
                 reverseSpeed += (inputTimerCounter * Time.deltaTime) * 2;
-                if (inputTimerCounter >= inputTimer)
+                if (reverseSpeed >= _trueReverseSpeed)
                 {
                     reverseSpeed = _trueReverseSpeed;
                     inputTimerCounter = 0;
@@ -175,16 +175,9 @@ public class CarController : MonoBehaviour
         carRigidbody.MoveRotation(carTransform.rotation);
     }
 
-    public void SpeedBoost(float speedBoostValue)
+    public void SpeedBoost(Vector3 forceAngle, float forceValue)
     {
-        if (_moveInput > 0)
-        {
-            forwardSpeed += (forwardSpeed * 0.5f);
-        }
-        else if(_moveInput < 0)
-        {
-            reverseSpeed -= (reverseSpeed * 0.5f);
-        }
+        sphereRigidbody.AddForce(forceAngle * forceValue,ForceMode.Impulse);
     }
 
 

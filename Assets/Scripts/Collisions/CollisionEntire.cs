@@ -17,4 +17,5 @@ public class CollisionEntire : MonoBehaviour
             particle.transform.position = gameObject.transform.position;
         }
     }
+    
 }
