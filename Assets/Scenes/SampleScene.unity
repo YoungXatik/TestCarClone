@@ -2511,6 +2511,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2507167962945642816, guid: bd589894d48972d4e92aad5975a71d23, type: 3}
+      propertyPath: speedBoost
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2507167962945642816, guid: bd589894d48972d4e92aad5975a71d23, type: 3}
+      propertyPath: forceAngle.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2507167962945642817, guid: bd589894d48972d4e92aad5975a71d23, type: 3}
       propertyPath: m_Name
       value: SpeedBoost
