@@ -177,16 +177,16 @@ public class CarController : MonoBehaviour
 
     public void SpeedBoost(float speedBoostValue)
     {
-        forwardSpeed += (forwardSpeed * 0.5f);
+        if (_moveInput > 0)
+        {
+            forwardSpeed += (forwardSpeed * 0.5f);
+        }
+        else if(_moveInput < 0)
+        {
+            reverseSpeed -= (reverseSpeed * 0.5f);
+        }
     }
 
-    public void SetSpeedToZero()
-    {
-        forwardSpeed = 0;
-        reverseSpeed = 0;
-        _moveInput = 0;
-    }
 
-    
-    
+
 }         
