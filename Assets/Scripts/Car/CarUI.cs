@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class CarUI : MonoBehaviour
@@ -20,5 +21,6 @@ public class CarUI : MonoBehaviour
             speedText.text = Mathf.RoundToInt(Mathf.Abs(value)).ToString();
             speedometer.SetFloat("speed",Mathf.Abs(value));
         }
+        
     }
 }

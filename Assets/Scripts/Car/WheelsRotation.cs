@@ -16,9 +16,9 @@ public class WheelsRotation : MonoBehaviour
         
         float verticalAxes = Input.GetAxisRaw("Vertical");
 
-        foreach (var wheel in wheels)
+        for (int i = 0; i < wheels.Length; i++)
         {
-            wheel.Rotate(Time.deltaTime * verticalAxes * wheelsSpeed,0,0, Space.Self);
+            wheels[i].Rotate(Time.deltaTime * verticalAxes * wheelsSpeed,0,0, Space.Self);
         }
     }
 }

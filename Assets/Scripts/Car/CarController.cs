@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -14,12 +15,14 @@ public class CarController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
 
     [Header("Move")]
-    private float _moveInput;
+    [SerializeField] private float _moveInput;
     private float _trueForwardSpeed;
     private float _trueReverseSpeed;
-    private float _maxForwardSpeed;
     [SerializeField] private float forwardSpeed;
     [SerializeField] private float reverseSpeed;
+
+    [SerializeField] private float breakSpeed;
+    [SerializeField] private bool breaking;
 
     [Header("Turn")]
     private float turnInput;
@@ -37,8 +40,15 @@ public class CarController : MonoBehaviour
     [SerializeField] private GameObject[] smoke;
 
     public float inputTimerCounter { get; private set; }
+
+    public float inputSpeedTimer = 1;
     public float inputTimer = 3;
-    
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 60;
+    }
+
     private void Start()
     {
         _carUI = GetComponent<CarUI>();
@@ -47,19 +57,30 @@ public class CarController : MonoBehaviour
         normalDrag = sphereRigidbody.drag;
         _trueForwardSpeed = forwardSpeed;
         _trueReverseSpeed = reverseSpeed;
-        _maxForwardSpeed = forwardSpeed * 2;
     }
 
+    private void Breaking()
+    {
+        if (breaking)
+        {
+            return;
+        }
+        else
+        {
+            breaking = true;
+            breakSpeed = forwardSpeed / 180;
+        }
+    }
     private void Update()
     {
-        _moveInput = Input.GetAxis("Vertical");
+       // _moveInput = Input.GetAxis("Vertical");
         turnInput = Input.GetAxis("Horizontal");
 
         _moveInput *= _moveInput > 0 ? forwardSpeed : reverseSpeed;
 
         carTransform.position = sphereTransform.position;
 
-        float newRotation = turnInput * turnSpeed * Time.deltaTime * Input.GetAxisRaw("Vertical");
+        float newRotation = turnInput * turnSpeed * Time.deltaTime;
         carTransform.Rotate(0, newRotation, 0, Space.World);
 
         RaycastHit hit;
@@ -70,45 +91,49 @@ public class CarController : MonoBehaviour
 
         sphereRigidbody.drag = isCarGrounded ? normalDrag : modifiedDrag;
 
-        _carUI.UpdateUI(_moveInput);
-        
+        _moveInput = forwardSpeed;
+
         if (Input.GetKey(KeyCode.W))
         {
+            breaking = false;
             inputTimerCounter += Time.deltaTime;
-            if (inputTimerCounter >= inputTimer) 
+            forwardSpeed += (inputTimerCounter * Time.deltaTime) * 2;
+            if (inputTimerCounter >= inputSpeedTimer) 
             {
-                forwardSpeed += (inputTimerCounter * Time.deltaTime) * 2;
-                if (forwardSpeed >= _maxForwardSpeed)
-                {
-                    forwardSpeed = _maxForwardSpeed;
-                }
+                forwardSpeed += (inputTimerCounter * Time.deltaTime) * 5;
             }
         }
-        else if(Input.GetKeyUp(KeyCode.W))
+        else
         {
-            forwardSpeed = _trueForwardSpeed;
-            inputTimerCounter = 0;
+            _moveInput = forwardSpeed;
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
         {
-            if (_moveInput >= 0)
+            if (_moveInput > 0)
             {
+                Breaking();
+                _moveInput = forwardSpeed;
+                forwardSpeed -= breakSpeed;
+                if (forwardSpeed <= _trueForwardSpeed)
+                {
+                    forwardSpeed = _trueForwardSpeed;
+                    inputTimerCounter = 0;
+                }
+            }
+            else if(_moveInput <= 0)
+            {
+                _moveInput = -reverseSpeed;
                 inputTimerCounter += Time.deltaTime;
+                reverseSpeed += (inputTimerCounter * Time.deltaTime) * 2;
                 if (inputTimerCounter >= inputTimer)
                 {
-                    reverseSpeed = 0;
-                    forwardSpeed = 0;
+                    reverseSpeed = _trueReverseSpeed;
+                    inputTimerCounter = 0;
                 }
             }
         }
-        else if (Input.GetKeyUp(KeyCode.S))
-        {
-            forwardSpeed = _trueForwardSpeed;
-            reverseSpeed = _trueReverseSpeed;
-            inputTimerCounter = 0;
-        }
-        
+        _carUI.UpdateUI(_moveInput);
 
         if (isCarGrounded)
         {
@@ -152,16 +177,16 @@ public class CarController : MonoBehaviour
 
     public void SpeedBoost(float speedBoostValue)
     {
-        StartCoroutine(SpeedBoostCoroutine(speedBoostValue));
+        forwardSpeed += (forwardSpeed * 0.5f);
     }
 
-    private IEnumerator SpeedBoostCoroutine(float speedBoost)
+    public void SetSpeedToZero()
     {
-        forwardSpeed += speedBoost;
-        _maxForwardSpeed += speedBoost;
-        yield return new WaitForSeconds(2f);
-        forwardSpeed -= speedBoost;
-        _maxForwardSpeed -= speedBoost;
+        forwardSpeed = 0;
+        reverseSpeed = 0;
+        _moveInput = 0;
     }
+
+    
     
 }         
